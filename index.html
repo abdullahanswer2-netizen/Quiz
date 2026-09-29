@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Question For You ❤</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0f050b;
+      --card-bg: rgba(28, 12, 22, 0.75);
+      --card-border: rgba(225, 29, 72, 0.25);
+      --accent-rose: #f43f5e;
+      --accent-glow: #e11d48;
+      --text-gold: #fde68a;
+      --text-main: #fecdd3;
+      --text-sub: #fda4af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(159, 18, 57, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(88, 28, 135, 0.25) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(15, 5, 11, 0.8) 0%, #0f050b 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(244, 63, 94, 0.2);
+      border-radius: 50%;
+      animation: float 12s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 580px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 36px 28px;
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(225, 29, 72, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 10;
+      transition: all 0.4s ease;
+    }
+
+    .screen {
+      display: none;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .screen.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .title-romantic {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.2rem;
+      color: var(--text-gold);
+      text-align: center;
+      text-shadow: 0 0 15px rgba(253, 230, 138, 0.3);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      color: var(--text-sub);
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 24px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: var(--text-main);
+      font-size: 0.98rem;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .option-btn:hover {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: var(--accent-rose);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(225, 29, 72, 0.2);
+      color: #fff;
+    }
+
+    .option-btn.selected {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.3) 0%, rgba(159, 18, 57, 0.4) 100%);
+      border-color: var(--accent-rose);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(225, 29, 72, 0.3);
+    }
+
+    .option-radio {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-sub);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .option-btn.selected .option-radio {
+      border-color: var(--text-gold);
+      background: var(--accent-rose);
+    }
+
+    .textarea-container {
+      margin-bottom: 28px;
+    }
+
+    .custom-textarea {
+      width: 100%;
+      height: 130px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: none;
+      outline: none;
+      transition: all 0.3s ease;
+      line-height: 1.5;
+    }
+
+    .custom-textarea:focus {
+      border-color: var(--accent-rose);
+      box-shadow: 0 0 20px rgba(225, 29, 72, 0.25);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .custom-textarea::placeholder {
+      color: rgba(253, 164, 175, 0.4);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(225, 29, 72, 0.35);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(225, 29, 72, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .progress-bar {
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, #f43f5e, #fde68a);
+      transition: width 0.4s ease;
+    }
+
+    .evade-btn {
+      transition: transform 0.2s ease !important;
+    }
+
+    .heart-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 16px;
+      animation: pulse 2s infinite;
+      display: block;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .final-note {
+      text-align: center;
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .whatsapp-btn {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.35);
+    }
+
+    .whatsapp-btn:hover {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 12px 30px rgba(5, 150, 105, 0.5);
+    }
+
+    .hint-text {
+      font-size: 0.82rem;
+      color: rgba(253, 164, 175, 0.6);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 28px 20px; }
+      .title-romantic { font-size: 2.6rem; }
+      .question-title { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-particles" id="particles"></div>
+
+  <div class="container">
+    
+    <!-- START SCREEN -->
+    <div class="screen active" id="screen-start">
+      <span class="heart-icon">✨</span>
+      <h1 class="title-romantic">For Someone Special</h1>
+      <p class="subtitle">A Small Interactive Quiz</p>
+      <p class="final-note">
+        I created this little space just for you. Take a few seconds to answer these few cute questions... ❤️
+      </p>
+      <button class="btn-primary" onclick="startQuiz()">
+        Start Quiz ✨
+      </button>
+    </div>
+
+    <!-- QUESTION 1 -->
+    <div class="screen" id="screen-q1">
+      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+      <p class="subtitle">Question 01 / 05</p>
+      <h2 class="question-title">Guess karo, jab maine tumhein pehli baar dekha/baat ki thi toh mera sabse pehla thought kya tha? 💭</h2>
+      
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption('q1', 'Yeh itni pyari kyun hai?', this)">
+          <span>A) "Yeh itni pyari kyun hai?"</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q1', 'Mera dil toh gaya!', this)">
+          <span>B) "Mera dil toh gaya!"</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q1', 'Isse baat kaise karoon?', this)">
+          <span>C) "Isse baat kaise karoon?"</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q1', 'Yeh sab baatein aik sath!', this)">
+          <span>D) Yeh sab baatein aik sath! ❤️️</span>
+          <div class="option-radio"></div>
+        </button>
+      </div>
+
+      <button class="btn-primary" id="next-q1" disabled onclick="nextScreen('screen-q2')">
+        Next Question →
+      </button>
+    </div>
+
+    <!-- QUESTION 2 -->
+    <div class="screen" id="screen-q2">
+      <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+      <p class="subtitle">Question 02 / 05</p>
+      <h2 class="question-title">Tumhein mere andar sabse achhi baat kya lagti hai ya tumhein mujh mein kya pasand hai? ✍</h2>
+      
+      <div class="textarea-container">
+        <textarea 
+          id="q2-input" 
+          class="custom-textarea" 
+          placeholder="Yahan dil se type karo..."
+          oninput="handleTextInput(this.value)"
+        ></textarea>
+      </div>
+
+      <button class="btn-primary" id="next-q2" disabled onclick="nextScreen('screen-q3')">
+        Next Question →
+      </button>
+    </div>
+
+    <!-- QUESTION 3 -->
+    <div class="screen" id="screen-q3">
+      <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+      <p class="subtitle">Question 03 / 05</p>
+      <h2 class="question-title">Sab se zyada cute kaun hai? 🙈</h2>
+      
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption('q3', 'Tum', this)">
+          <span>A) Tum 🥰</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q3', 'Sirf Tum', this)">
+          <span>B) Sirf Tum ✨</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q3', 'Bilkul Tum', this)">
+          <span>C) Bilkul Tum ❤️</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn evade-btn" id="evade-btn" onmouseover="evadeButton(this)" onclick="evadeButton(this)">
+          <span>D) Main (Wrong Answer!) 😜</span>
+          <div class="option-radio"></div>
+        </button>
+      </div>
+
+      <button class="btn-primary" id="next-q3" disabled onclick="nextScreen('screen-q4')">
+        Next Question →
+      </button>
+    </div>
+
+    <!-- QUESTION 4 -->
+    <div class="screen" id="screen-q4">
+      <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
+      <p class="subtitle">Question 04 / 05</p>
+      <h2 class="question-title">Kya tumhein pata hai tum mere liye kitni special ho? 🌹</h2>
+      
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption('q4', 'Thodi si', this)">
+          <span>A) Thodi si</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q4', 'Bohot zyada', this)">
+          <span>B) Bohot zyada</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q4', 'Jitna tum soch bhi nahi sakti', this)">
+          <span>C) Jitna tum soch bhi nahi sakti 💕</span>
+          <div class="option-radio"></div>
+        </button>
+      </div>
+
+      <button class="btn-primary" id="next-q4" disabled onclick="nextScreen('screen-q5')">
+        Final Question →
+      </button>
+    </div>
+
+    <!-- QUESTION 5 -->
+    <div class="screen" id="screen-q5">
+      <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+      <p class="subtitle">Final Question</p>
+      <h2 class="question-title" style="font-size: 1.35rem; color: var(--text-gold);">
+        Will you be my special person / life partner forever? 💍❤️
+      </h2>
+      
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption('q5', 'YES! ❤️️', this)">
+          <span>A) YES! ❤️</span>
+          <div class="option-radio"></div>
+        </button>
+        <button class="option-btn" onclick="selectOption('q5', 'ABSOLUTELY YES! 💕', this)">
+          <span>B) ABSOLUTELY YES! 💕</span>
+          <div class="option-radio"></div>
+        </button>
+      </div>
+
+      <button class="btn-primary" id="next-q5" disabled onclick="finishQuiz()">
+        Complete & See Result ✨
+      </button>
+    </div>
+
+    <!-- END SCREEN -->
+    <div class="screen" id="screen-end">
+      <span class="heart-icon">💖</span>
+      <h1 class="title-romantic">You Are My Everything</h1>
+      <p class="subtitle">100% Perfect Match!</p>
+      <p class="final-note">
+        Thank you for answering! Har moment tumhare sath special hota hai. Neeche button par click karke apne answers mujhe bhej do! 👇
+      </p>
+
+      <button class="btn-primary whatsapp-btn" onclick="sendWhatsApp()">
+        <span>Send Answers via WhatsApp 📲</span>
+      </button>
+
+      <p class="hint-text">
+        (Is par click karne se aapke saare answers auto-type ho kar mere WhatsApp par aa jayeinge!)
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    const MY_PHONE_NUMBER = "923337922463"; 
+
+    const userAnswers = { q1: '', q2: '', q3: '', q4: '', q5: '' };
+
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 18; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const size = Math.random() * 6 + 2;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDuration = `${Math.random() * 8 + 8}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    function startQuiz() { nextScreen('screen-q1'); }
+
+    function nextScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      setTimeout(() => {
+        document.getElementById(screenId).classList.add('active');
+      }, 100);
+    }
+
+    function selectOption(questionKey, value, element) {
+      userAnswers[questionKey] = value;
+      const parent = element.parentElement;
+      parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+      element.classList.add('selected');
+
+      const nextBtnMap = { 'q1': 'next-q1', 'q3': 'next-q3', 'q4': 'next-q4', 'q5': 'next-q5' };
+      if (nextBtnMap[questionKey]) {
+        document.getElementById(nextBtnMap[questionKey]).removeAttribute('disabled');
+      }
+    }
+
+    function handleTextInput(value) {
+      userAnswers.q2 = value.trim();
+      const nextBtn = document.getElementById('next-q2');
+      if (userAnswers.q2.length > 0) {
+        nextBtn.removeAttribute('disabled');
+      } else {
+        nextBtn.setAttribute('disabled', 'true');
+      }
+    }
+
+    function evadeButton(btn) {
+      const x = (Math.random() - 0.5) * 160;
+      const y = (Math.random() - 0.5) * 100;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function finishQuiz() {
+      nextScreen('screen-end');
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#f43f5e', '#fde68a', '#e11d48', '#ffffff']
+        });
+      }
+    }
+
+    function sendWhatsApp() {
+      const textMessage = 
+        `✨ *Romantic Quiz Answers* ✨\n\n` +
+        `*Q1 (First Thought):*\n"${userAnswers.q1}"\n\n` +
+        `*Q2 (What she likes in you):*\n"${userAnswers.q2}"\n\n` +
+        `*Q3 (Who is cutest):*\n"${userAnswers.q3}"\n\n` +
+        `*Q4 (How special she is):*\n"${userAnswers.q4}"\n\n` +
+        `*Q5 (Life Partner Forever):*\n"${userAnswers.q5}"\n\n` +
+        `❤️ *Matched 100% Forever!*`;
+
+      const encodedMessage = encodeURIComponent(textMessage);
+      const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodedMessage}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
